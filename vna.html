@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+   <meta charset="utf-8">
+   <!--
+
+-->
+<link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA/wAAAAD/AAAAAP8A/wD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAACIAADMwAEQAIgAAAwAARAAAIAADAAQAAAACAAAAQAAAAAAAAAAAAAAQAAAAAAABAREQAAAAAREQEAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAQAAwAgAAAAQAADAAIAAEQAAAMAACIARAAAMzAAIgAAAAADAAAAD/fwAAnjkAAJ95AADvdwAA9+8AAP9/AAC/fQAAD3AAAL99AAD8HwAA//8AAPdvAADvdwAAn3kAAJ45AAD/fwAA" rel="icon" type="image/x-icon">
+
+   <title>Vector Network Analyzer</title>    
+   <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+   <script>
+    MathJax.Hub.Config({
+        tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true,
+        processClass: "mathjax",
+        ignoreClass: "no-mathjax"
+        }
+    });//			MathJax.Hub.Typeset();//tell Mathjax to update the math
+</script>
+</head>
+<body>
+<div id = "scroll">
+    <a href= "index.html">HOME</a>
+    <h1>VNA</h1>
+    <h1>Vector Network Analyzer</h1>
+    <p style = "font-size:3em">
+        <span style = "color:red">$- S_{11}$</span>
+        <span style = "color:green">$- S_{22}$</span>
+        <span style = "color:blue">$- S_{12}$</span>
+        <span style = "color:purple">$- S_{21}$</span>
+
+    </p>
+    <H1>Inputs:</H1>
+    <table id = "inputtable">
+        <tr>
+            <td>
+                Display:
+            </td>
+            <td class = "button">DB/PHASE</td>
+        </tr>
+        <tr>
+            <td>dB min:</td>
+            <td>
+                <input id = "dbmin">
+            </td>
+        </tr>
+        <tr>
+            <td>dB max:</td>
+            <td>
+                <input id = "dbmax">
+            </td>
+        </tr>
+        <tr>
+            <td>Picoseconds Delay:</td>
+            <td>
+                <input id = "picoseconds">
+            </td>
+        </tr>
+        <tr>
+            <td>Number of Points:</td>
+            <td>
+                <input id = "numpoints">
+            </td>
+        </tr>
+        <tr>
+            <td>Fstart [GHz]:</td>
+            <td>
+                <input id = "fstart">
+            </td>
+        </tr>
+        <tr>
+            <td>Fstop [GHz]:</td>
+            <td>
+                <input id = "fstop">
+            </td>
+        </tr>
+        <tr>
+            <td>IFBW [Hz]:</td>
+            <td>
+                <input id = "ifbw">
+            </td>
+        </tr>
+        <tr>
+            <td>POWER:</td>
+            <td class = "button" id = "powerbutton">
+                HIGH/LOW
+            </td>
+        </tr>
+
+    </table>
+    <div id = "savebutton" class = "button">SAVE DATA FILE</div>
+</div>
+
+
+<script>
+document.getElementById("dbmin").onchange = function(){
+    dbmin = parseFloat(this.value);
+}
+document.getElementById("dbmax").onchange = function(){
+    dbmax = parseFloat(this.value);
+}
+
+if(innerWidth > innerHeight){
+    squaresize = innerHeight - 20;
+    document.getElementById("scroll").style.width = (innerWidth - squaresize - 60).toString() + "px";
+    
+    document.getElementById("scroll").style.height = (innerHeight - 47).toString() + "px";
+    
+}
+else{
+    squaresize = innerHeight - 10;
+    document.getElementById("scroll").style.width = (innerWidth - 10).toString() + "px";
+    document.getElementById("scroll").style.height = (innerHeight - squaresize -  15).toString() + "px";    
+}
+
+</script>
+<style>
+
+#scroll{
+    position:absolute;
+    left:5px;
+    top:5px;
+    border:solid;
+    border-width:2px;
+    border-radius:5px;
+    padding:1em 1em 1em 1em;
+    overflow:scroll;
+    background-color:white;
+}
+table{
+    font-size:2em;
+}
+input{
+    font-size:1em;
+    width:6em;
+}
+
+body{
+    font-family:Arial;
+    background-color:#9f8767;
+    overflow:hidden;
+}
+input{
+    color:#00ff00;
+    background-color:black;
+    font-family:courier;
+    border-color:#0CCDDF;
+}
+h1{
+    text-align:center;
+}
+.button{
+    border:solid;
+    cursor:pointer;
+    text-align:center;
+}
+.button:hover{
+    background-color:#0CCDDF40;
+}
+.button:active{
+    background-color:#0CCDDFa0;
+}
+
+
+a{
+/*    color:#ff2cb4;*/
+    color:blue;
+}
+.datafilelink{
+    display:block;
+    color:blue;
+}
+.datalink{
+    color:blue;
+    border:solid;
+    border-color:blue;
+    text-align:center;
+    padding:5px 5px 5px 5px;
+    border-radius:5px;
+    margin-top:5px;
+    margin-bottom:5px;
+    cursor:pointer;
+}
+.datalink:hover{
+    background-color:#0000ff60;
+}
+.datalink:active{
+    background-color:#ffffff60;
+}
+main{
+    position:absolute;
+    right:5px;
+    top:5px;
+    border:solid;
+    cursor:pointer;
+    background-color:white;
+    border-radius:5px;
+}
+</style>
+<script>
+
+trace = {};
+filename = "trace.json";
+
+dbmin = -120;
+dbmax = 10;
+picoseconds = 0;
+document.getElementById("dbmin").value = dbmin.toString();
+document.getElementById("dbmax").value = dbmax.toString();
+document.getElementById("picoseconds").value = picoseconds.toString();
+
+function setup() {
+    createCanvas(squaresize,squaresize);    
+    strokeWeight(1);  
+}
+
+
+function draw(){
+    
+
+    var httpc = new XMLHttpRequest();
+    httpc.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            trace = JSON.parse(this.responseText);
+            loadtrace();
+        }
+    };
+    httpc.open("GET", "load-file.php?filename=trace.json", true);
+    httpc.send();
+
+}
+
+function loadtrace(){
+    clear();
+    noFill();
+    strokeWeight(1);
+    stroke(0);
+    for(var dbvalue = dbmin;dbvalue < dbmax;dbvalue += 10){
+        line(0,map(dbvalue,dbmin,dbmax,height,0),width,map(dbvalue,dbmin,dbmax,height,0));
+    }
+    for(var fghz = trace.f[0]/1e9;fghz < trace.f[trace.f.length - 1]/1e9;fghz += 1){
+        line(map(fghz,trace.f[0]/1e9,trace.f[trace.f.length - 1]/1e9,0,width),0,map(fghz,trace.f[0]/1e9,trace.f[trace.f.length - 1]/1e9,0,width),height);
+    }
+    fill(0);
+    textSize(25); 
+    for(var dbvalue = dbmin;dbvalue < dbmax;dbvalue += 10){
+        text(Math.round(dbvalue).toString() + " dB",10,map(dbvalue,dbmin,dbmax,height,0) - 5);
+    }
+
+    for(var fghz = trace.f[0]/1e9;fghz < trace.f[trace.f.length - 1]/1e9;fghz += 1){
+        if(fghz > 0.5){
+            text(Math.round(fghz).toString() + " GHz",5+map(fghz,trace.f[0]/1e9,trace.f[trace.f.length - 1]/1e9,0,width),30);            
+        }
+
+    }
+    
+    noFill();
+    strokeWeight(5);
+    stroke("red");
+    beginShape();    
+    for(var index = 0;index < trace.f.length;index++){
+        vertex(map(trace.f[index],0,trace.f[trace.f.length-1],0,width),map(trace.s11db[index],dbmin,dbmax,height,0));
+    }
+    endShape();
+    stroke("green");
+    beginShape();    
+    for(var index = 0;index < trace.f.length;index++){
+        vertex(map(trace.f[index],0,trace.f[trace.f.length-1],0,width),map(trace.s22db[index],dbmin,dbmax,height,0));
+    }
+    endShape();
+    stroke("blue");
+    beginShape();    
+    for(var index = 0;index < trace.f.length;index++){
+        vertex(map(trace.f[index],0,trace.f[trace.f.length-1],0,width),map(trace.s12db[index],dbmin,dbmax,height,0));
+    }
+    endShape();
+    stroke("purple");
+    beginShape();    
+    for(var index = 0;index < trace.f.length;index++){
+        vertex(map(trace.f[index],0,trace.f[trace.f.length-1],0,width),map(trace.s21db[index],dbmin,dbmax,height,0));
+    }
+    endShape();
+    
+    
+}
+
+
+function keyPressed() {
+  
+//  savejson();
+}
+
+
+
+direction = '';
+function mouseWheel(event) {
+  if (event.delta > 0) {
+    direction = 'mouse wheel down';
+
+  } else {
+    direction = 'mouse wheel up';
+  }  
+}
+
+function mouseClicked() {
+  // Code to run.
+}
+
+function savejson(){
+    
+}
+
+</script>
+</body>
+</html>
+
+
+    
+    
