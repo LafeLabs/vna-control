@@ -1,0 +1,7 @@
+{
+    "numpoints": 1000,
+    "ifbw": 100,
+    "start": 100000000,
+    "stop": 10000000000,
+    "power": "HIGH"
+}

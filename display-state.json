@@ -1,0 +1,12 @@
+{
+    "dbmin": -120,
+    "dbmax": 10,
+    "picoseconds": 1000,
+    "mode": "Power [dB]",
+    "show": [
+        true,
+        true,
+        true,
+        true
+    ]
+}
