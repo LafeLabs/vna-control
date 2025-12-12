@@ -221,6 +221,48 @@ main{
 </div>
 <script>
 
+document.getElementById("savepngbutton").onclick = function(){
+    png64 = document.getElementById("defaultCanvas0").toDataURL("image/png");
+    newfilename =  "trace" + nowjson.datetime.replaceAll(":","_") + ".png";
+    var httpc = new XMLHttpRequest();
+    var url = "save-png.php";        
+    httpc.open("POST", url, true);
+    httpc.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+//    
+    httpc.send("data="+encodeURIComponent(png64.substring(22))+"&filename=" + newfilename);//send text to filesaver.php
+     //location.reload(); 
+     
+}
+
+document.getElementById("savebutton").onclick = function(){
+    var httpcs = new XMLHttpRequest();
+    httpcs.onreadystatechange = function(){
+        if (this.readyState == 4 && this.status == 200) {
+            rawtrace = this.responseText;
+            rawtrace = "!ifbw:" + vnacontrol.ifbw.toString() + "\n" + rawtrace;
+//            rawtrace = "!temperature:300 K\n" + rawtrace;
+            
+            rawtrace = "!datetime:" + nowjson.datetime + "\n" + rawtrace;
+            rawtrace = "!power:" + vnacontrol.power + "\n" + rawtrace;
+            rawtrace = "!switchstate:" + switchstate.state + "\n" + rawtrace;
+            rawtrace = "!url:https://github.com/lafefspietz/vna-control\n" + rawtrace;
+
+        
+            newfilename =  "trace" + nowjson.datetime.replaceAll(":","_") + ".s2p";
+            console.log(newfilename);
+            var url = "save-file.php";        
+            var httpc = new XMLHttpRequest();
+            httpc.open("POST", url, true);
+            httpc.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            httpc.send("data="+encodeURIComponent(rawtrace)+"&filename=" +newfilename);//send text to filesaver.php            
+            
+        }
+    };
+    httpcs.open("GET", "load-file.php?filename=trace.s2p", true);
+    httpcs.send();
+
+}
+
 document.getElementById("s11").onclick = function(){
     displaystate.show[0] = !displaystate.show[0];
     savedisplaystate();
@@ -553,6 +595,7 @@ function draw(){
 
 function loadtrace(){
     clear();
+    background(255);
     noFill();
     strokeWeight(1);
     stroke(0);

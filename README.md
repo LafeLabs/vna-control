@@ -7,6 +7,7 @@
  - [get-trace.ipynb](get-trace.ipynb)
  - [qrcode.html](qrcode.html)
  - [edit-web-files.html](edit-web-files.html)
+ - [switch-state.json](switch-state.json)
 ## Plan for immediate development:
 
  - build model of information flow with physical media and digital diagram
